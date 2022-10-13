@@ -1,0 +1,126 @@
+
+
+Migrating On-premise database to RDS postgresql
+================================================
+
+1. We will do pre-migration assessment (understanding the architecture of the application, DB architecture, data movement, upstream and downstream)
+
+application type: web application
+concurrency : howmany concurrent connections
+frequently data is being written : TPS- transactions per second, queries per second-qps
+application architecture : applications / service that are connecting to the db and how they are connecting - JDBC/ODBC, API call , python call 
+app layers : micro services - talk to DB - write/read  - upstream application
+DB architecture : Primary/ replication / high availability setup/ backup/ retention/ version 
+DB size: 
+Extensions: on-premise database
+how the data is split: diff tablespaces, file systems etc
+data: schemas/ objects 
+ram:
+cpu:
+os:
+db version:
+
+
+the production data will be synced with warehouses/ data lakes or big data for analytics purpose - replica / weekly clone - down streaming 
+
+no# users : 
+user privileges: 
+backup tools : 
+retention period - 90 days 
+RTO : recovery time objective - 5/10 min
+RPO : recovery point objective - til what data 
+
+
+AWS RDS postgres : validate whether RDS is the right solution to meet RTO/ RPO , extension, rentention - 35 days , tools integration - connection pooling, client tools, data integration checks - upstream/down stream, costing - ? - proceed 
+
+Migration:
+1) create empty database 
+2) based on app criticality high/medium/low - get down time. 
+Lets say low critical - pg_dump on onpremise, move backup to s3, pull s3 backup to ec2, restore to rds from ec2
+medium - pg_dump 
+db size, 
+high - create target rds, sync data - 
+10 am run backup -- 12pm rds restore is done
+after 10am before 12pm there is a data - cdc - change data capture 
+for every table latest data needs to be captured - trigger 
+dump _& restore - completed
+apply cdc of 2 hrs 10am to 12pm - 15min
+stop application on source - 
+no more new data to source - 
+source and target data is in sync - 
+connect app to rds
+
+post migration:
+
+1. validate db connectivity - from application
+2. validate data in the db - db size, count of objects, data accessibility
+   - any downstream applications / data integrations / data links/ FDW foreign data wrappers - need to reconfigure
+   - alerting / monitoring / backups etc - dba
+3. testing team will validate complete application functionality
+
+migration is completed
+
+
+Bucardo - replication - logical replication between source and target - table by table data sync and migration
+
+tools : pgpool (HA to redicrt reads to repplica) pg_bouncer (connection pooling), pg_admin, dbeaver (client connection)
+
+
+crotab 
+======
+
+
+crontab -l   --> to list
+
+crontab -e   -> to edit 
+Below given command execute at 7 AM and 5 PM daily.	
+
+
+0 7,17 * * * /scripts/script.sh
+0 7,17 * * * /scripts/vacuumscript.sh
+
+
+
+vi script.sh
+psql -h 10.23.4.2.1 -U avenger -d testdb -f /u01/pgscripts/analyze.sql
+
+chmod 755 script.sh
+
+cd /u01/pgscripts
+
+vi analyze.sql
+
+analyze verbose;
+
+cd  os userhome location
+vi .pgpass
+10.23.4.2.1:5432:testdb:avenger:testdbpwd
+
+chmod 600 .pgpass
+
+
+
+vi vacuumanalyze.sql
+vaccum analyze verbose table1;
+vaccum analyze verbose table2;
+vaccum analyze verbose table3;
+vaccum analyze verbose table4;
+vaccum analyze verbose table5;
+
+vi vacuumscript.sh
+psql -h 10.23.4.2.1 -U avenger -d testdb -f /u01/pgscripts/vacuumanalyze.sql
+
+chmod 755 vacuumscript.sh
+
+
+
+
+
+
+
+
+
+
+
+
+

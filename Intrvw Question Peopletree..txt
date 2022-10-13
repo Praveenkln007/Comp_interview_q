@@ -1,0 +1,34 @@
+
+Q. merge agent query optimization cluster?
+A
+
+Q. null cluster index?
+A.
+
+Q. deadlock situation?
+A.
+
+Q. syntax for creating views and joins?
+A.CREATE VIEW view_name AS SELECT columns FROM tables [WHERE conditions];
+ view_name. The name of the SQL VIEW that you wish to create.
+
+Q.Indexation?
+A.An Index is the structure or object by which we can retrieve specific rows or data faster.
+
+
+Q. log models?
+
+
+Q cursor,
+
+Q normalization denormalization
+
+Q i have 2 DB, i need to migrate in single DB- what is the keypoint for that?
+
+Q what is the use of OCI
+
+
+
+
+Q. Migration(tables) each have different no 0f fields how will u migrate?
+A. 

@@ -1,0 +1,412 @@
+WIPRO INTERVIEW QUESTIONS:
+
+
+1.Day to day activities?
+A.I support daily multiple issues like CPU, memory,connectivity, Long running queries,replication,index,statistics and backup failures etc
+
+Activities i handle 
+
+
+2.How do you install postgres?
+A.We install postgres through rpms
+WE need to download postgres repositories 
+as part this we do installation and initialisation 
+
+*******3.Have you upgrade to postgres -11?How did you do that?
+A.Yes we have done
+  we need to follow a check list which has precheck
+pre- upgrade
+-->install version11 on the same server with diff port
+--> data validation preparation
+    extension compatability
+    check unknown data types
+    note db links:-foreign data wrapper and materialised views
+-->we need to check total object count before and after upgradation
+-->configure the parametres
+
+
+
+4.What kind of backups you are taking?
+A.file sys backup and logical backups
+
+5.What kind of backups you take daily?
+A. Based on the requirement we do archive backup,logical  and hot backup 
+   
+
+6.If user accidently dropped the table.How do you recover the table?
+A.we restore the particular table through the logical backup
+
+7.What is vacuuming?
+A.cleaning and reorganising the  tuples
+
+8.What is vacuum and vacuum full?
+A.vacuum full places the lock on the table and  it will perform the reorganization of table level blocks
+vacuum will just clean the dead tuples it will not reorganize the table and it will not place the lock.
+
+vacuum on a table will clear dead tuples logically and hence next table scan will not scan dead tuples
+vacuum full will exclusively lock tables aand performs cleaning of dead tuples logically and physically so it will release OS level space for dead tuples. 
+
+****9.What kind of additional pg tools you are using as part of DB maintenance and others?
+A.dbeaver,pgwatch 
+
+****10.If db performance is slow how do you check?
+A.We will do health check  
+resource check :-
+
+
+we will check run the top -> pid-> query -> tablestats -> bloating -> explain plan -> full tablescan/ index scan -> reindex/vacuum / say total no# db call s on this table is high
+
+
+11.how do you tune a query if it is running slow or performance is slow?
+A.when there is something which is extremely low issue could be db locks/session locks - by running a query we can check those locks
+with this we can identify which query is locking which query
+
+we need to check table stats,query,bloating,expalain query plan 
+we need to whether it is full table scan or index whether reindexing is needed,whether bloating need to cleared   
+
+
+****12.How do you configure replication?
+A.If it is RDS replication
+with primary instance we can create the replica --> actions -->create replica 
+
+
+
+
+CLOUD4C INTERVIEW QUESTIONS : 
+
+
+1.could you go through your profile?
+A.
+
+
+
+
+2.Why are you looking for a job change?
+A.
+
+
+
+
+3.What u know on AWS?what have you done?
+A.I have a knowledge on Aws services like - ec2,RDS,AMI,IAM,S3
+  
+to create ec2 and RDs instance
+
+4.How do you identify postgres RDS utilisation from cloud watch,how do you do cpu bottleneck? how do you identify all these things?
+A.Monitoring :- Here we can monitor - memory,cpu ,db connections ,storage etc -->this is called RDS cloud watch monitoring 
+The diff between ec2 and RDS cloud watch
+RDS cloud watch exclusively monitor some of the db side things like db connections,free storage space, read and write iops
+we will set alerts on cpu when it reache threshold 
+
+
+
+5.What are the limitations we have in {postgres RDS/ aurora} campared to {IAAS  local VM (on premises)}?
+A.THIS ARE ON PREMISES DB ADMINSTRATION
+EC2 instance
+
+1.ec2 instance/vm ready
+2.installed the postgres
+3.set up the db
+4.update conf parametres
+5.we set up backups 
+6.we set alerts and monitoring
+7.upgraded the db manually
+8.adminstered the db manually and availability is our responsbility 24/7
+
+**Here we take care of database data and we support 
+-->db availability  == 24/7 is must be available
+-->security		== it shld not breech any aecurity issues
+-->reliability      == how stable it is (if we  run something it shl not go dwn)
+-->operational excellence =how stable it is,performance how fast it respond,hw many concurrency connecitons 
+-->cost  optimization    == to run the db server we should not spend too much of money it should be efficient  
+--->scalability  == means today we can run 2k queries tomorrow it shld run 3k queries it should scale
+
+**Here we have op sys access and we have to update are you will go and update PostgreSQL conf, will go and take backup at file system level,we will create tablespace, all of those things  
+
+RDS DB ADMINSTRATION
+we dont need to do 
+1.set up
+2.installation
+3.backup and restore
+4.upgrades
+
+then how this things will be done
+
+AWS offers RDS services; as they are providing this services they will take care - 24/7 is AWS responsibility 
+
+Here most of the infrastructure things like alerts,installaiotn,backups,server set ups are updated/automated as a service
+
+this is called db as service
+
+Here no op sys access
+
+We will have RDS end point we will connect to end point directly
+we can connect postgres promt directly
+
+
+
+
+6.how do you select IOPs for Rds instance?can we modify and how?
+A.while creation of instance we can configure the iops based on the request 
+ we can modify the iops through modify option we can upsize the iops
+
+
+
+7.How do you configured streaming replicaiton? How do you do it?
+A.We need to create and confiure(postgres installation) master and replica instances
+-->we will set parametres(listen_addresses=*,
+-->create user replicator with password 
+-->we need to updata hba conf file (with replica private ip and replicator,replicaiton and authentication)
+-->in replica we need to run pg_basebackup
+-->cat $PGDATA/postgresql.auto.conf
+-->archive_mode = ON
+-->archive_command = 'cp %p /archives/%f' ## Modify this with an appropriate shell command.
+
+8.How do you do maintanance of server once you deploy it ?
+A.regular analysis and vacuuming 
+
+
+9.Any experience on Azure?
+A.No
+
+
+10.What if WAL file is completely full on disk?
+A.first we need check route cause like
+fielsys location -->space -->disk size --->
+we will check for any possibility to free up the space or to replace tablespace 
+
+
+11. How do you identify CPU bottlenecks on local VM (on premises)?
+A.as part of cpu monitoring through cloud watch ,we will get alerts regarding cpu threshold
+ 
+
+12.After identifying (a long running query)query what will you do ?
+A.we need to check table stats,query,bloating,expalain query plan 
+we need to whether it is full table scan or index whether reindexing is needed,whether bloating need to cleared   
+
+
+13.If the query need to be run daily then what will you do?
+A.we can run a query daily throug cron tab -- schedular
+
+
+14.Have you gone through concurrency?MVCC
+A.
+
+
+15.How come dead lock situations happens?how will you clear it?
+A.
+
+
+16.Apart from postgres dp you know any db's?
+A.as if now i dint get opportunity to learn additional dbs if there is a chance i deffentely i am ready learn 
+
+
+
+
+
+DATACENTER INTERVIEW QUESTIONS :
+
+
+
+1. What is the difference between concurrent user and ...
+
+
+2. Where you change the parameters , if we need to access 5000 users to application ?
+a. for giving access to 5000 users to application we need to set the max_connections parameter to 5000 connections and need to update hba conf file for giving access to each user.
+
+
+3. Configure replication ?
+a. 
+
+4. How many servers you handle currently ?
+a. as part of my current role and my team as 5 members we handle around 250+ servers. 
+
+
+
+5. What is actual data size ?
+a.
+
+
+6. What is the actual ram and cpu for the database server ?
+a. The actual RAM & CPU is after usage of OS level and installed softwares.
+                                      or 
+   The RAM & CPU used by the OS, hidden files, installed softwares and what ever the remaining space is called actual size.
+                                      
+   
+
+
+7. if sometimes master goes to recovery mode and slave going to recovery mode, what is the reason and how do we fix this ?
+a. 
+
+
+
+8.  Have you done any optimization parameter tuning ? what kind ?
+a.  yes, we have done. we have increased shared buffers, work mem, maintainence work_mem.
+
+
+
+9. is there any algorithm, increasing and decreasing the size ?
+a.
+
+
+10. do you have idea to optimize the query ( locks ) ?
+a. yes i have an idea to optimize the query on a particular table ,but will direct this to app team to optimize the query. 
+
+
+11. if tuning is required on the configuration file, who will take care ?
+a.  
+
+
+ACCENTURE INTERVIEW QUESTIONS :
+
+1. Brief introduction about day to day activities ?
+a. my daily routine in work environment is addressing issues based on SLA's received. the issues are like CPU cosumption, memory, disk size, long running queries, backup failures etc.
+
+
+2. What are the versions you are using now , having any plan to upgrade ?
+a. at present we are using POSTGRES 12 version, in future we may upgrade to newer versions but as of now there is no plan for upgradation.
+
+
+3.What is the high level plan for upgrade from 10 to 12 ?
+a. as it is  a major version upgradation while upgradation  1st we need to identify what are the databases, schemas, tablespaces  &  objects and their sizes available in server and we need to make sure that every object has backup for the same. and we need to know what are the configurations done in older version,followed by a check list  after that we have to start the upgradation.
+
+
+4. What is the postgres contrib, why it is used ?
+a.  postgresql-contrib 
+Contributed Extensions and Additions to PostgreSQL 
+
+PostgreSQL is an advanced object-relational database management system that supports an extended subset of the SQL standard, including transactions, foreign keys, subqueries, triggers, and user-defined types and functions. The postgresql-contrib package includes extensions and additions that are distributed along with the PostgreSQL sources, but are not (yet) officially part of the PostgreSQL core. Documentation for the modules contained in this package can be found in /usr/share/doc/packages/postgresql/contrib.
+
+or
+postgresql contrib has extensions and additions,we use this for generating reports and creating extension files like .html
+
+
+
+5. what type of replication we use ?
+a. streaming replication for on premises servers,logical replicaiton in RDS.
+
+
+***6. difference between synchronous & asynchronous replication ?
+   a. synchronous replication write data to primary storage and the replica simultaneously. As such, the primary copy and the replica should always remain synchronized. In contrast, asynchronous replication write data to the primary storage first and then copy the data to the replica.
+
+
+7. difference between streaming replication and logical replication ?
+a. 
+
+
+8. can we have cascade type in streaming replication ?
+Cascading replication - Wal archive copy and replication from A to B + B to C - from replica again do one more level of replication - cascade replication.
+from Server B (replica ) to another replica 
+
+a. 
+
+
+9. in the standby / slave server, there is a file ( standby.signal ), what it is used for ?
+a. there is an important file (standby.signal) that must exist in a standby data directory to help postgres determine its state as a standby. It is automatically created when you use the "-R" option while taking pg_basebackup.
+
+
+
+10. What is the use of recovery.conf ?
+a.
+
+
+11. if we now promote slave as master, does any change happen on recovery.conf ?
+a.
+
+
+12. What is the MVCC ? what is the use of it ?
+a.
+
+
+13. What is vacuum ?
+a. vacuum is used to clean dead tuples from tables.
+
+
+14. What creates dead tuples ? how are they created ?
+a.  dead tuples are created by deleting and inserting large number of tuples multiple times in a tables. while running this cyclic process multiple times there is a creation of dead tuples.
+
+
+15.  dead tuples are not released on their own space, why we need vacuum ?
+a. because dead tuples occupies some space in disk space, that occupied space is not usable for new data files, to remove or clear this space we need to remove dead tuples from table by using vacuum.
+
+
+16. if dead tuples are released , space has to be decreased, but why they are holding  space, is this a  compatibility or a flaw we have in postgres ?
+a.
+
+
+**17. Vacuum freeze will freeze transaction IDs ?
+   a.  yes, Vacuum freeze does freeze transaction id's. it will release deleted transaction id's and rearrange the the total transaction id's at database level.
+
+
+18. What will vacuum analysts do?
+a.  Vacuum analyze will do cleaning of dead tuples in tables and update the statistics of table at metadata level.
+ 
+
+**19. If there is vacuum freeze already, if you run vacuum analyze what will happen.
+a.  
+
+
+20. Difference between normal explain and explain analyze.
+a.
+
+
+21. What is PG rewind?
+a.
+
+
+22. What are Wal files? What is it used for?
+a.  WAL files are write ahead log files, they are transactional copy of disk files. they are used for point in time recovery.
+
+23. nominclature of wall.
+a.
+
+
+24. What is the maximum size of object in Postgres database?
+a. maximum size of a object (table)  is 32 TB
+
+
+25. Max size of database ?
+a. 
+      Limit	                    Value
+Maximum Database Size	      Unlimited
+Maximum Table Size	      32 TB
+Maximum Row Size              1.6 TB
+Maximum Field Size	      1 GB
+Maximum Rows per Table	      Unlimited
+Maximum Columns per Table	250 - 1600 depending on column types
+Maximum Indexes per Table	Unlimited
+
+
+26. diffrence between EC2 &  RDS ?
+a.  RDS is a highly available relational database. It automatically creates a primary DB instance and replicates the data side by side to a standby instance in a different Availability Zone. With EC2, you have to set up your database for high availability.
+
+RDS is easy to set up, cost-effective and allows you to focus on more important tasks. 
+EC2 gives you full control over your database, OS and software stack. It allows you to hire your own database administrators. 
+
+RDS offers automated backups. Plus you can get snapshots on-demand and keep them with you as long as you wish to. With EC2, you have to take care of backup.
+
+
+
+**27. Where will be HBA.conf in RDS ?
+a. 
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+ 

@@ -1,0 +1,126 @@
+Q1.What are the configurations u setup?
+A.parameter settings- work mem, # of parallel workers, maintenance work mem, # of connections, listen _addressess etc etc
+
+Q2.What are the parametres u change?
+A.
+
+Q3.What is the impact of changing parametres?
+A.
+
+Q4.how u rate ur selelf in postgres architecture?
+A.
+
+Q5.What are the background processes?
+A.
+
+Q6.When this autovacuum will trigger on a specific table?
+A.track_counts must also be enabled for autovacuum to work. This parameter can only be set in the postgresql.conf file or on the server command line; however, autovacuuming can be disabled for individual tables by changing table storage parameters.
+
+
+Q7.In what scenariaos we have to do vacuum manually?
+A.
+
+Q8.which scenario u work on HA?
+A.
+
+Q9.which cloud u are working on and which rds u are working on like (engine)?
+A.AWS cloud and RDS postgres 11
+
+Q10.How do u connect to postgres?
+A.psql -h -d -U
+Psql is an interactive terminal program for working with PostgreSQL. Use psql to edit, automate, and execute queries in PostgreSQL.
+pgAdmin is a web interface for managing PostgreSQL databases. It provides a visual, user-friendly environment with a host of practical solutions that make managing databases easy.
+
+Q11.What is highavailability means?
+A.
+Q12.Have u worked on any streaming replication?
+A.
+Q13.Can u give the steps on this hot streaming replication?
+A.
+Q14.How u update recovery.conf file?
+A
+Q15.What is hba.conf file?
+A.The pg_hba.conf file defines a variety of aspects: What IP addresses or ranges can connect to PostgreSQL and for what accounts What method of authentication those IP ranges / accounts can use
+
+***pg_hba_conf file:- this file clearly says postgrsql client authentication file - this is host based authentication.This file has multiple details like
+
+--> which hosts are allowed to connect 
+-->how clients are authenticated which postgres SQL 
+-->username they can use 
+-->which database they can access 
+
+
+Q16.elobrate hba?
+A.host based authentication file
+
+
+Q17.What is the diff between md5 and trust method?
+A.trust
+Allow the connection unconditionally. This method allows anyone that can connect to the PostgreSQL database server to login as any PostgreSQL user they wish, without the need for a password or any other authentication.
+
+md5
+The method md5 uses a custom less secure challenge-response mechanism. It prevents password sniffing and avoids storing passwords on the server in plain text but provides no protection if an attacker manages to steal the password hash from the server.
+
+
+Q18.What areas u worked and have knowledge on AWS?
+A.
+
+Q19.What are the version upgradation u worked on?
+A.
+
+
+Q20.Can u tell the steps for upgrade?
+A.
+
+Q21.What is the size of wal file?
+A.wal file size is 16mb once it is consumed another wal file will be created
+
+Q22.What is logical replication?
+A.
+
+Q23.what is the diff between static and logical replication?
+A.Logical replication sends row-by-row changes, physical replication sends disk block changes. Logical replication is better for some tasks, physical replication for others.
+
+
+Q24.What is object level?
+A.
+
+Q25.What is the diff between vacuum and vacuum full?
+A.VACUUM is a non-blocking operation, i.e., it does not create exclusive locks on the tables. Hence, VACUUM process can actually run in parallel to any ongoing transactions to the database. But running VACUUM FULL is a different case and it also locks the tables thereby preventing any further transaction on those tables.
+
+Q26.How does the vacuum process know which are the dead tuples and which one live tuples?
+A.
+
+Q27.How tid will appear which one is active tid can u determine?
+A.
+
+Q28.If the user ask u when is my database last started?
+A.
+Q29.What is this pg_stat_activity view contain?
+A.
+Q30.from dba perpesctive how does this pg_stat_activity table info is helpful?
+A.
+Q31.what are the diff states in this pg_stat_activity vies?
+A.
+Q32.what is the diff between idle and idle at transaction state?
+A.
+Q33.user request asking for hw many dead tuples there in table?
+A.
+Q34.Can u tell one issue how u handled it?
+A.
+Q35.Any idea on toast tables and hot table?
+A.TOAST (The Oversized-Attribute Storage Technique).
+
+PostgreSQL uses a fixed page size (commonly 8 kB), and does not allow tuples to span multiple pages. Therefore, it is not possible to store very large field values directly. To overcome this limitation, large field values are compressed and/or broken up into multiple physical rows. This happens transparently to the user, with only small impact on most of the backend code. The technique is affectionately known as TOAST (or "the best thing since sliced bread"). The TOAST infrastructure is also used to improve handling of large data values in-memory.
+
+
+Q36.Transaction wrap id situation?
+A.
+Q37.What happen if it reaches the max limit
+A.
+Q38.What is MVCC?
+A.
+Q39.Break the replication break or stop?
+A.
+Q40.Any tools u have worked?
+A.

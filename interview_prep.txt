@@ -1,0 +1,262 @@
+1. Introduction
+
+I have been working as a cloud database administrator since last 3.2 years. I work for Capgemini, I do support 24X& environment. I also work on projects to support database upgrades, migrations and configurations. 
+
+As part of 24X7 operations, we support daily incidents based on SLA, we support scheduled changes and RCA's 
+We get daily multiple issues like CPU, memory and Long running queries and backup failures etc
+As part of project we install postgres, configure, setup high availability and create databases, configure backups, setup maintenance jobs and setup alerts  and deploy schemas. 
+
+
+servers/dbs handeled
+
+we have around 190+ servers on cloud and on-premise, among which 54 are production environment high critical dbs and others are low critical.
+we will maintain 10-15 dbs on single server in dev environment dbs. high environments like qat staging we maintain separately.
+
+service based companys- so lot of clients- currently im handling 2 applications from 2 diff clients. out of these 2 we have diff micro services and diff databases for these applications. 
+
+microservices- i remember we have around 40- 45 microservices.
+
+
+24X7 operations
+----------------
+what are the incidents you get/ kind
+
+1. CPu issues - cpu is 100% or  DB instance is rebooted - top -> pid-> query -> tablestats -> bloating -> explain plan -> full tablescan/ index scan -> reindex/vacuum / say total no# db call s on this table is high
+2. Memory issues -  is 100% or  DB instance is rebooted - when there huge data load (insert/update) or data aggregation (joins) or data extraction (select) - hugedata volume
+3. IO issues - rarely on disk level or heavy reads/ writes
+4. Long running queries - db blockers  - extremely slow - db locks - query can be rewritten
+5. user login issues / privileges issues - unable to connect / cant access the object 
+6. backup issues - backup & retention policy - production backup retention period is min 30days maximum 180 days. RDS max retention period is 35 days. manually take backups 
+crontab -l -- to list the cron jobs. Cron is a scheduler, you can schedule any script/job to run any time of the day,hr of the day, min of the day, week of the day and month of the day. it helps for repeated jobs. ex: backup - daily FS incremental, weekly full, hourly wal archives
+maintenance - vacuuming - weekly, vacuum freeze - monthly, analyze - daily, vacuum_full - 
+rds logs download - every 30min - common server - db bastion server - db admin server
+pgbadger report - hourly 
+
+schema refresh and db refresh
+
+refresh - taking prod data and updating non-prod
+
+7. replication issues 
+replication - data copy from source to target 
+Postgresql replication - From primary copy the transaction data via wal archives. Copy wal archives from source to target 
+source - read write instance 
+target - read instance 
+
+shipping master instance wal archives to target replica. On replica shipped wal archives will be applied. So that source and target will be in sync. 
+Different kinds of replication available on postgres:
+1. Hot streaming replication - physical standby - copy master wal archives to replica and apply - wal archive level - db level - why? we use to off load the db load on primary 
+
+
+2. Logical replication - table level replication. uses - replication slot- area where transactions sql get stored, these sqls via network applies on target. 
+
+why ?  to sync the specified table data from one db to another db
+
+A - B 
+orders - orders - continuous logical replication
+
+3. Cascading replication - Wal archive copy and replication from A to B + B to C - from replica again do one more level of replication - cascade replication.
+from Server B (replica ) to another replica 
+
+primary to replica to replica
+
+issues: SYnc issue 
+
+database primary - 128gb ram - per min 40000 transactions (30000 writes, 10000 reads - selects) - wal archives generated - 30min period - 100 archives generated
+on replica - all wal archives needs to be applied - instead of 128gb ram - 32 gb ram 
+sync? 1. to apply 100 archives it takes 1hr+ 
+2.config is 128gb ram on replica-  long running queries on replica - all the long running queries pause/delay wal archive apply on replica .80 wals applied-  sync delay
+application who reads replica data sees some lag 
+
+insert command on primary db , table emp - data gets inserted in primary -> wal archives generates - Point in time recovery  --> this file will be transferred to other db server replication server (reads) 
+
+clients writes to A --- > B (no direct client writes, it is only wal archives writes from server A)  
+
+
+
+
+
+8. autovacuum issues
+9. maintenance issues 
+index - how do you identify when the index needs to be rebuilt 
+
+
+
+
+10. deployment issues
+
+changes 
+----------
+1. upgrades
+2. parameter changes
+3. replication setup
+
+
+
+Best practises you follow to reduce operational issues: (long running queries, cpu, memory, IO) 
+1. config alerts
+2. proactive monitoring Health checks
+3. Maintenance 
+
+Baseline assessment -to understand the environment-  to understand what are the operational issues, what are the configurations, db size, kinds of applications, understand how hardware sizing, parameters are rightly configured, concurrent connections, bloating, index status, space wasted - Generate one health check report 
+generate 1 week pgbadger to understand DB load based on the application - read vs write ratio on the DB. frequent hits on the db - performance bottlenecks
+Security report - standard the db security is - users/ roles/ passwords/ grants, password strength, password rotation, data security/ masking 
+
+desing and modelling gaps 
+
+Best practises :
+1. Understand application concurrency and parallel processing expected on DB - throughput expected 
+   validate hardware sizing - right ram, cpu based on max concurrent connections 
+2. Parameter configurations - per session memory at db level - 2000 connections * avg workers *  - work_mem = 128mb, shared_buffers, maintenance_work_mem 
+my workload runs 40000 transactions per min, batch jobs run every 6hrs - more memory, parallel processing to reduce latency 
+3. DB design , modelling - ER diagram, table design - partition, fill factor , table options
+4. RTO / RPO of the application - 15min RTO - Standalone is not a best practise - must have replication. readvs write ration
+5. Alerts & monitoring - test alerts
+6. schedule maintenance
+7. Bench marking test along with application
+8. DB Failover test 
+9. DR sample test
+10. Health check report
+11. security report - user integrity 
+12. all the database policies are implemented
+
+release the db to the production
+
+query best practises:
+
+2. avoid distinct on large tables
+3. make sure to have appropriate index on the table
+4. make sure to write query based on the result set
+5. set session level work mem if required
+6. process the bulk data in small chuncks - ingestion/ aggregation / select 
+
+
+
+
+
+
+
+
+
+
+
+
+
+problems (root cause analysis) 
+----------
+1. why cpu was 100% or db was rebooted
+
+
+projects
+
+
+
+
+
+
+
+
+
+Challenges:
+
+1. Performance issue with a query after new storage addition. On-premise
+28 days - 
+600gb db SSD - added 500gb - HDD magnetic tape
+
+2. Autovacuum was running morethan 6 days - creating performance issues - 3 weeks 
+large table - 1.8tb size 
+understand read/write ratio of the table 
+understand dead tuples creation per day
+existing autovacuum parameters  and memory (maintenance_work_mem and parallel maintenance workers per gather) - upsized
+had to manually disable autovacuum, upsize the instance 
+and run manual vacuum full - 26hrs 
+downsized the instance, enabled auto vacuum
+no fill factor had to update fill factor
+pg_repack - table reorg 
+
+3. online db migration - 5-6 months
+3 tb db - per min 2-3 lakhs transactions - no option of downtime - 20-30min max downtime
+RDS 9.4 to 12.x -VERSION END OF LIFE - N-1 best practice
+no logical replication - table replication - table primary key - extension pglogical 
+DMS - did not support 
+Bucardo - open source replication/ migration tool - 90% results - CDC change data capture failing 
+ex. table1 id 200000 rows - copy to target - 150000, 200000
+20000 rows - CDC - copy to target - 
+Scripts - for every table triggers - capture - updates/inserts/deletes
+target same structure - connectivity DB link (FDW - doreign data wrapper) - fetch source data from target - insert on target. trigger captured data - applies on target
+
+4.  Memory was keep hitting 100% - application team no help
+    No connection pooling - pg_bouncer/ RDS - rds_proxy - application/ database. 
+    active 1000 + 750 connections addition - after app team work - connections should be closed. If connections remain idle - holds memory for the connection
+    application team is not closing the connections gracefully
+    connection opens on PG - client process -> postmaster - host/ip/user/pwd/db/encryption/port via tcp/udp - establishes connection 
+    application - to connect to db - driver / adapter- JDBC/ODBC - Java / C - postgresql- 'C' 
+    on pg - allocates memory - app - initiates cursor on db - 
+    cursor - unit of memory 
+    Implemented a shell script - check on idle connections beyond 30min - kill all idle sessions beyond 30min 
+
+5. transaction id age - till 200million id age - no action from db engine internally - beyond 200million id age, it triggers autovacuum freeze to freeze unused transaction id's. 
+Autovacuum is not able to freeze transaction id's to prevent ID wrap around - 200millions id threshold hits - autovacuum triggers 
+autovacuum is triggered - running freeze - current id age is 400million - howlong autovacuum freeze will run? - it will till transaction id age reaches below threshold
+table1 - id age - 400 million -> autovacuum freeze is running - identify every unused transaction - freezes 
+application is also accessing table1 -> application faces slowness on the table 
+got downtime - ran manuall vacuum freeze but autovacuum freeze was blocking manual freeze. I tried killing autovacuum freeze, it killed again re-triggered. I disabled autovacuum. Autovacuum disable will not stop autovacuum transaction freeze . raised aws case - aws team helped to stop jobs at their end.
+
+6.  Migration hangs - RDS instance1 to instance2 data migration (1.2 tb) - cancelled migration 
+    data copy via fdw - 200gb for every  30min
+    1st hour data copy - 300gb 
+    2nd hour data copy - 2gb
+    3rd hour data copy - 1.8gb 
+    rds instance credits are exausted - credits are 100% used 
+    stopped instance - snapshot restored to new instance - prod was functioning normal 
+    
+data copy for the first 1hr - 92gb 
+raised aws case - credits are over - iops/cpu credits over 
+option 1: purchase additional 3500 iops -> temporary to finish the migration - decreased iops - purchased reservation for 1 year 
+option 2: add 500gb - 1tb storage -> 
+
+    
+
+
+5. costing - RDS IOPS bill - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Top 3 technical challenges identified and resolved

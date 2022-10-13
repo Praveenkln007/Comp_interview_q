@@ -1,0 +1,233 @@
+Q: What is RDS DB instance?
+Ans:
+A DB instance is a standalone database environment in the AWS Cloud. Your DB instance may include numerous user-created databases. You can access your DB instance with the same tools and applications that you would use to access a standalone database instance.
+
+Q: Which database engines are supported with Amazon RDS?
+Ans:
+Amazon RDS currently supports below databases:
+MySQL
+PostgreSQL
+MariaDB
+Oracle
+Microsoft SQL Serv
+
+
+Q: What is the maximum number DB instances can user can run with Amazon RDS?
+Ans:
+Users are allowed to have up to 40 Amazon RDS DB instances by default. Under the "License Included" model, up to 10 from those 40 can be Oracle or SQL Server DB instances.
+
+
+
+Q: Is it possible for a user to have multiple databases on RDS?
+Ans:
+RDS for MySQL
+No limit imposed by software. The MySQL standard for RDS MySQLdatabase instances is that there is no limit on the number of databases (http://dev.mysql.com/doc/refman/5.5/en/database-count-limit.html).
+
+RDS for Oracle
+1 database per instance, no limit on number of schemas per database.
+
+RDS for SQL Server
+30 databases per instance.
+
+RDS for PostgreSQL
+No limit imposed by software.
+
+
+
+Q: How to upgrade Amazon RDS instances?
+Ans:
+The modify-db-instance command can be used to upgrade Amazon RDS instances. Data migration is not required. However there would be some downtime/OutageTime roughly 5 minutes.
+
+
+
+Q: What are the top Alternatives to Amazon RDS?
+Ans:
+Below are the most popular alternatives and competitors to Amazon RDS.
+Amazon Redshift
+Apache Aurora
+MySQL, Oracle
+Heroku Postgres
+
+
+Q: How to enable automated backups in RDS?
+Ans:
+You can enable automated backups in RDS in below ways:
+
+Using RDS API
+You can use the RDS API ModifyDBInstance operation to enable automated backups in RDS with the following required parameters:
+DBInstanceIdentifier
+BackupRetentionPeriod
+From AWS Console
+Sign in to the AWS and go to Amazon RDS console at https://console.aws.amazon.com/rds/.
+Navigation pane -> Select databases -> Select DB instance that you want to modify.
+Select Backup retention period -> Provide a nonzero positive value, like 5 days.
+Choose Continue -> Choose Apply immediately.
+
+
+
+Q: How to delete RDS instance with RDS cluster in AWS using boto3?
+Ans:
+We can use delete_db_instance on rds client as given below:
+
+rds_client = boto3.client('rds')
+
+for cluster in result ["rds"]:
+ print ("RDS DB is about to delete %s | in %s" % (cluster['DBInstanceIdentifier']))
+
+ response = rds_client.delete_db_instance(DBInstanceIdentifier=cluster['DBInstanceIdentifier'])
+
+ SkipFinalSnapshot=True
+ DeleteAutomatedBackups=True
+
+
+Q: How AWS RDS ensure high availability and reliability?
+Ans:
+AWS RDS allows multi-AZ deployment to ensure high availability and reliability.
+
+With the use of multi-AZ deployment feature, AWS automatically provisions and maintains a synchronous standby replica in a different Availability Zone.
+AWS synchronously replicates the data from the primary to the secondary database instance.
+Failover Support: In case if the primary database instance fails or gets shut down in any way, AWS will automatically fail over to another secondary database instance.
+
+
+Q: Which RDS database engines support multi-AZ deployment?
+Ans:
+AWS RDS allows multi-AZ deployment to ensure high availability and reliability. Multi-AZ deployments support can be used for below RDS database engine:
+
+MariaDB
+MySQL
+Oracle
+PostgreSQL
+
+
+Q: Which Amazon RDS database engine by default supports multi-AZ deployments?
+Ans:
+Amazon RDS offers Multi-AZ deployments with Always On AGs for the listed SQL Server versions and editions:
+
+SQL Server 2019
+Standard and Enterprise Editions.
+SQL Server 2017
+Enterprise Edition 14.00. 3049.1 or higher.
+
+
+--------------------------------------------
+
+Some General Interview Questions for PostgreSQL 1. How much will you rate yourself in PostgreSQL? When you attend an interview, Interviewer may ask you to rate yourself in a specific Technology like PostgreSQL, So It's depend on your knowledge and work experience in PostgreSQL. 2. What challenges did you face while working on PostgreSQL?
+
+
+Q1. What are the main features of PostgreSQL?
+Answer:
+Following are some of the features of PostgreSQL
+
+Object-relational database.
+Support and extensibility for SQL.
+Flexible API and database validation.
+MVCC and procedural languages,
+WAL and Client-Server.
+table inheritance and asynchronous replication.
+
+
+Q2. What is Cube Root Operator (||/) in PostgreSQL?
+Answer:
+Returns Cube Root of a number
+e.g. Select ||/ 16 “Cube Root of 16”
+
+
+Q4. Can you explain pgadmin?
+Answer:
+Pgadmin is a feature that is known to form a graphical front-end administration tool. This feature is available under free software released under Artistic License. Pgadmin iii is the new database administration tool released under artistic license.
+
+Q5. What is Multi-version control?
+Answer:
+Multi-version concurrency control or MVCC is used to avoid unnecessary locking of the database. This removes the time lag for the user to log into his database. This feature or time lag occurs when someone else is accessing the content. All transactions are kept as a record.
+
+
+Q6. What is the key difference between multi-version and lock models?
+ANS:
+The key difference between Multi-Version Concurrency Control and lock models is that in MVCC, the locks acquired for querying or reading the data doesn't conflict with locks acquired for writing data. In this case, reading never blocks writing, and writing never blocks reading. So, Multi-Version Concurrency Control has the upper hand compared to other lock models.
+
+
+
+
+Q9. What is the option in PostgreSQL to check rows that are affected in a previous part of the transaction?
+Answer:
+The SQL standard is defined by four levels of transaction isolation, basically regarding three phenomena. The three phenomenon must be prevented between concurrent transactions. The unwanted phenomenon is
+
+Phantom read: a transaction that re-executes a query, returning a set of rows that satisfy a search condition and then finds that the set of rows that have been satisfying the condition has changed due to other recently committed transaction.
+
+Non-repeatable read: a transaction that re-reads the data that it has previously read then finds that another transaction has already modified data.
+
+Dirty reads: a transaction when reads data that is written by a concurrent uncommitted transaction is the dirty read.
+
+
+
+Q10. What is A Ctid?
+Answer:
+CTIDs is a field, which exists in every PostgreSQL table and is known to identify specific physical rows according to their block and offset positions within a particular table. They are used by index entries to point to physical rows. It is unique for each record in the table and easily denotes the location of a tuple. A logical row’s CTID changes when it is updated, so the CTID cannot be used as a long-term row identifier. However, it is sometimes useful to identify a row within a transaction when no competing update is expected.
+
+Q11. What are the tokens?
+Answer:
+Token are the building blocks of any source code. They are known to comprise many of the special character symbols. These can be regarded as constant, quoted identifiers, other identifiers, and keywords. Tokens which are keywords, consist of pre-defined SQL commands and meanings. Identifiers are used to represent variable names like columns, tables etc.
+
+Q12. What is the purpose of Array_To_String in PostgreSQL?
+Answer:
+The Array_To_String function concatenates array elements using a provided delimiter.
+
+
+25) What does a Cluster index do?
+A Cluster index is used to sort table data rows according to their key values.
+
+
+28) How do you update the stats or statistics in PostgreSQL?
+To update stats or statistics in PostgreSQL, we have to call a special function called explicit 'vacuum'. This function creates a Vacuum where the option of Analyze is used to update statistics in PostgreSQL.
+
+Syntax:
+
+VACUUM ANALYZE;  
+
+29) What is the difference between clustered index and non clustered index in PostgreSQL?
+The main difference between clustered index and non clustered index in PostgreSQL is that the clustered index is an index type used to sort table data rows according to their key values. In RDBMS, a user can create a clustered index based on that column using the primary key. On the other hand, a non-clustered index is an index where the order of the rows does not match the physical order of the actual data. The non-clustered index is ordered by the columns that make up the index.
+
+30) What are the advantages of specifying data types in columns while creating a table?
+The key advantages of specifying data types in columns while creating a table are consistency, compactness, validation, and optimum performance.
+
+31) What are the different types of database administration tools used in PostgreSQL?
+Following are the different types of database administration tools used in PostgreSQL:
+
+Phppgadmin
+Psql
+Pgadmin
+Note: From the above PostgreSQL database administration tools, phppgadmin is the most popular. Most of the above tools are front-end administration tools and web-based interfaces.
+
+
+32) What is the way to delete complete data from an existing table in PostgreSQL?
+The best way to delete complete data from an existing table in PostgreSQL is to use the TRUNCATE TABLE command.
+
+33) What are the disadvantages of the DROP TABLE command in deleting complete data from an existing table?
+In PostgreSQL, the DROP TABLE command can be used to delete complete data from an existing table, but the biggest disadvantage of using the DROP TABLE command is that it removes complete table structure from the database. If you use the DROP TABLE command to delete the table, you must re-create a table to store data.
+
+34) What are the different properties of a transaction in PostgreSQL?
+Like other RDBMS, PostgreSQL also supports ACID properties. This is commonly referred to by the acronym named ACID. It means the properties of a transaction in PostgreSQL include Atomicity, Consistency, Isolation, and Durability.
+
+36) Which commands are used to control transactions in PostgreSQL?
+The following commands are used to control transactions in PostgreSQL:
+
+BEGIN TRANSACTION
+COMMIT
+ROLLBACK
+
+37) What do you understand by parallel query in PostgreSQL? How does it work?
+Parallel query is an advanced feature of PostgreSQL in which query plans are arranged so that they are assigned to multiple CPUs, and the user gets the answer to the queries faster.
+
+38) What is the use of the CTIDs field in PostgreSQL?
+The CTIDs field identifies the specific physical rows in a table according to their block and offsets positions in that table.
+
+39) What is the use of command enable-debug in PostgreSQL?
+In PostgreSQL, the command enable-debug is used to compile all applications and libraries. It provides some debugging symbols that facilitate developers to spot the bugs and other problems which may occur while the execution of the script. When we execute this procedure, it can delay or obstruct the system, amplifying the binary file size.
+
+40) What are the reserved words in PostgreSQL?
+The reserved words in PostgreSQL are SQL keywords and other symbols having some special meaning when the Relational Engine processes them. According to the SQL standard, the reserved keywords are the only real keywords, and they cannot be allowed as identifiers. On the other hand, the non-reserved keywords have a special meaning in particular contexts and can be used as identifiers in other contexts.
+
+41) What do you understand by WAL or Write-Ahead Logging in PostgreSQL?
+In PostgreSQL, Write-Ahead Logging or WAL is a standard method to ensure data integrity. It is a protocol or syntax to write actions and changes into a transaction log.
+
+The Write-Ahead Logging feature is used to enhance the reliability of the database by logging changes before any changes or updating to the database. It provides the database log in case of a database failure and ensures to start the work again from the point it was crashed or discontinued.
